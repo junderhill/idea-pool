@@ -19,6 +19,7 @@ namespace MyIdeaPool
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://localhost:8000")
                 .UseStartup<Startup>();
     }
 }

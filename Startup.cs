@@ -40,7 +40,6 @@ namespace MyIdeaPool
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
