@@ -10,6 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MyIdeaPool.Data;
+using Microsoft.EntityFrameworkCore;
+using MyIdeaPool.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace MyIdeaPool
 {
@@ -25,6 +30,19 @@ namespace MyIdeaPool
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdeaPoolContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("IdeaPoolDb"));
+            });
+            services.AddDefaultIdentity<User>()
+                .AddEntityFrameworkStores<IdeaPoolContext>();
+
+            services.Configure<IdentityOptions>(options =>{
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
