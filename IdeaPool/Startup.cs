@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +17,8 @@ using MyIdeaPool.Data;
 using Microsoft.EntityFrameworkCore;
 using MyIdeaPool.Models;
 using Microsoft.AspNetCore.Identity;
+using MyIdeaPool.Validators;
+using MyIdeaPool.ViewModels;
 
 namespace MyIdeaPool
 {
@@ -43,7 +47,23 @@ namespace MyIdeaPool
                 options.Password.RequiredLength = 8;
             });
 
+            ConfigureDependencies(services);
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
+
+        private void ConfigureDependencies(IServiceCollection services)
+        {
+            services.AddSingleton(
+                new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<UserSignupViewModel, User>()
+                        .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.email))
+                        .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.email))
+                        .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.name));
+                }).CreateMapper());
+            
+            services.AddTransient<IValidator<UserSignupViewModel>, UserSignupViewModelValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
