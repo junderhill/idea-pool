@@ -34,8 +34,10 @@ namespace MyIdeaPool.Controllers
            var user = _mapper.Map<UserSignupViewModel, User>(model);
 
            var result = await _userManager.CreateAsync(user, model.password);
-          
-           return Ok();
+           if(result.Succeeded){
+               return Ok();
+           }
+           return BadRequest(result);
        }
     }
 }

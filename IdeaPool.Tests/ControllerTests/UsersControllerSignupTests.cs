@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -140,7 +141,7 @@ namespace IdeaPool.Tests.ControllerTests
             //arrange
             SetValidatorToReturnIsValid();
             A.CallTo(() => mapper.Map<UserSignupViewModel, User>(model))
-                .Returns(new User()
+                .Returns(new User
                 {
                     Email = model.email,
                     UserName = model.email,
@@ -150,8 +151,10 @@ namespace IdeaPool.Tests.ControllerTests
             //act
             var result = await sut.Signup(model);
             //assert
-            Assert.IsType<BadRequestObjectResult>(result);
-            //todo: assert the errors returned in the response.
+            var badrequest = Assert.IsType<BadRequestObjectResult>(result);
+            var identityResult = Assert.IsType<IdentityResult>(badrequest.Value);
+            Assert.NotNull(identityResult);
+            Assert.True(identityResult.Errors.Any(e => e.Code == "DuplicateEmail"));
         }
     }
 }
