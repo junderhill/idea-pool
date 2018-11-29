@@ -116,5 +116,6 @@ namespace MyIdeaPool.Data
         bool SupportsUserLockout { get; }
         bool SupportsQueryableUsers { get; }
         IQueryable<User> Users { get; }
+        Task UpdateRefreshTokenForUser(string username, string refreshtoken);
     }
 }

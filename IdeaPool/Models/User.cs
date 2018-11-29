@@ -7,5 +7,7 @@ namespace MyIdeaPool.Models
     {
         [Required]
         public string Fullname { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }

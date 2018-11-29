@@ -16,12 +16,14 @@ namespace MyIdeaPool.Controllers
         private readonly IValidator<UserSignupViewModel> _validator;
         private readonly IMapper _mapper;
         private readonly IUserManager _userManager;
+        private readonly ITokenManager _tokenManager;
 
-        public UsersController(IValidator<UserSignupViewModel> validator, IMapper mapper, IUserManager userManager)
+        public UsersController(IValidator<UserSignupViewModel> validator, IMapper mapper, IUserManager userManager, ITokenManager tokenManager)
         {
             _validator = validator;
             _mapper = mapper;
             _userManager = userManager;
+            _tokenManager = tokenManager;
         }
 
        [HttpPost] 
@@ -35,7 +37,7 @@ namespace MyIdeaPool.Controllers
 
            var result = await _userManager.CreateAsync(user, model.password);
            if(result.Succeeded){
-               return Ok();
+               return Ok(_tokenManager.GenerateTokenResponse(user.UserName));
            }
            return BadRequest(result);
        }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -24,13 +25,14 @@ namespace IdeaPool.Tests.ControllerTests
         private readonly UsersController sut;
         private readonly UserSignupViewModel model;
         private readonly IUserManager userManager;
+        private readonly ITokenManager tokenManager;
 
         public UsersControllerSignupTests()
         {
             validator = A.Fake<IValidator<UserSignupViewModel>>();
             mapper = A.Fake<IMapper>();
             userManager = A.Fake<IUserManager>();
-            sut = new UsersController(validator,mapper, userManager);
+            sut = new UsersController(validator,mapper, userManager,tokenManager);
             model = new UserSignupViewModel
             {
                 email = "test@test.com",
@@ -121,6 +123,7 @@ namespace IdeaPool.Tests.ControllerTests
         {
             //arrange
             SetValidatorToReturnIsValid();
+            A.CallTo(() => tokenManager.GenerateTokenResponse(A<string>.Ignored)).Returns(new TokenResponse(){jwt = "abc123",refresh_token = "abc123"});
             A.CallTo(() => mapper.Map<UserSignupViewModel, User>(model))
                 .Returns(new User()
                 {

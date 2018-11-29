@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -17,6 +18,7 @@ using MyIdeaPool.Data;
 using Microsoft.EntityFrameworkCore;
 using MyIdeaPool.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using MyIdeaPool.Validators;
 using MyIdeaPool.ViewModels;
 
@@ -34,6 +36,8 @@ namespace MyIdeaPool
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
+            
             services.AddDbContext<IdeaPoolContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("IdeaPoolDb"));
             });
@@ -54,6 +58,18 @@ namespace MyIdeaPool
 
         private void ConfigureDependencies(IServiceCollection services)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("AuthenticationSettings").GetValue<string>("SymmetricSecurityKey"))),
+                        RequireSignedTokens = true,
+                        RequireExpirationTime = true,
+                        ValidateLifetime = true
+                    };
+                });
+            
             services.AddSingleton(
                 new MapperConfiguration(cfg =>
                 {
@@ -69,6 +85,14 @@ namespace MyIdeaPool
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+/*            var tokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = ,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidIssuer = "http://localhost:8000",
+            }*/
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
