@@ -30,6 +30,7 @@ namespace IdeaPool.Tests.ControllerTests
         public UsersControllerSignupTests()
         {
             validator = A.Fake<IValidator<UserSignupViewModel>>();
+            tokenManager = A.Fake<ITokenManager>();
             mapper = A.Fake<IMapper>();
             userManager = A.Fake<IUserManager>();
             sut = new UsersController(validator,mapper, userManager,tokenManager);
@@ -135,7 +136,7 @@ namespace IdeaPool.Tests.ControllerTests
             //act
             var result = await sut.Signup(model);
             //assert
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
         
         [Fact]
