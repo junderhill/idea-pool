@@ -37,7 +37,8 @@ namespace MyIdeaPool.Controllers
 
            var result = await _userManager.CreateAsync(user, model.password);
            if(result.Succeeded){
-               return Ok(_tokenManager.GenerateTokenResponse(user.UserName));
+               var responseToken = await _tokenManager.GenerateTokenResponse(user.UserName);
+               return Ok(responseToken);
            }
            return BadRequest(result);
        }

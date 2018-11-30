@@ -49,6 +49,7 @@ namespace MyIdeaPool
                 options.Password.RequireLowercase = true;
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
             });
 
             ConfigureDependencies(services);
@@ -79,7 +80,9 @@ namespace MyIdeaPool
                         .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.name));
                 }).CreateMapper());
             
-            services.AddTransient<IValidator<UserSignupViewModel>, UserSignupViewModelValidator>();
+            services.AddScoped<IValidator<UserSignupViewModel>, UserSignupViewModelValidator>();
+            services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<ITokenManager,JwtTokenManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
