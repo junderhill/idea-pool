@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyIdeaPool.Data;
 using MyIdeaPool.ViewModels;
@@ -20,6 +21,7 @@ namespace MyIdeaPool.Controllers
 
         [HttpPost]
         [Route("refresh")]
+        [AllowAnonymous]
         public async Task<ActionResult> Refresh([FromBody] RefreshAccessTokenViewModel model)
         {
             if (string.IsNullOrWhiteSpace(model.refresh_token))
@@ -33,6 +35,7 @@ namespace MyIdeaPool.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult> Signin([FromBody] SigninViewModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.email);

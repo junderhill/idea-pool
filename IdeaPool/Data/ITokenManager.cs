@@ -6,7 +6,7 @@ namespace MyIdeaPool.Data
 {
     public interface ITokenManager
     {
-        JwtSecurityToken CreateToken(string username);
+        Task<JwtSecurityToken> CreateToken(string username);
         Task<TokenResponse> GenerateTokenResponse(string username, bool includeRefresh = true);
     }
 }

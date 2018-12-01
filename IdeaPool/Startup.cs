@@ -18,6 +18,7 @@ using MyIdeaPool.Data;
 using Microsoft.EntityFrameworkCore;
 using MyIdeaPool.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.IdentityModel.Tokens;
 using MyIdeaPool.Validators;
@@ -57,7 +58,7 @@ namespace MyIdeaPool
            
             
             
-            services.AddMvc()
+            services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

@@ -22,7 +22,7 @@ namespace MyIdeaPool.Data
 
         public async Task<TokenResponse> GenerateTokenResponse(string username, bool includeRefresh = true)
         {
-            var jwt = new JwtSecurityTokenHandler().WriteToken(CreateToken(username));
+            var jwt = new JwtSecurityTokenHandler().WriteToken(await CreateToken(username));
           
             if(includeRefresh){
               var refresh_token = await CreateRefreshToken(username);
@@ -45,11 +45,15 @@ namespace MyIdeaPool.Data
             return refreshToken;
         }
 
-        public JwtSecurityToken CreateToken(string username)
+        public async Task<JwtSecurityToken> CreateToken(string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.NameIdentifier, user.Id), 
+                new Claim(ClaimTypes.Name, username),
+                new Claim("Fullname", user.Fullname),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             var key = GetSymmetricSecurityKey();

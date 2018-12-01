@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -28,14 +30,18 @@ namespace MyIdeaPool.Controllers
 
         [Route("me")]
         [HttpGet]
-        [Authorize]
         public ActionResult UserInfo()
         {
-            return Ok("test");
+            return Ok(new
+            {
+                email = ControllerContext.HttpContext.User.Claims.Single(c => c.Type == ClaimTypes.Email).Value,
+                name = ControllerContext.HttpContext.User.Claims.Single(c => c.Type == "Fullname").Value
+            });
         }
         
        [Route("users")]
        [HttpPost] 
+       [AllowAnonymous]
        public async Task<ActionResult> Signup([FromBody]UserSignupViewModel model)
        {
            var validationResult = _validator.Validate(model);
