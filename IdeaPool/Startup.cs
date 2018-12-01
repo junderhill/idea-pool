@@ -18,6 +18,7 @@ using MyIdeaPool.Data;
 using Microsoft.EntityFrameworkCore;
 using MyIdeaPool.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.IdentityModel.Tokens;
 using MyIdeaPool.Validators;
 using MyIdeaPool.ViewModels;
@@ -53,8 +54,11 @@ namespace MyIdeaPool
             });
 
             ConfigureDependencies(services);
+           
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         private void ConfigureDependencies(IServiceCollection services)
@@ -67,7 +71,9 @@ namespace MyIdeaPool
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("AuthenticationSettings").GetValue<string>("SymmetricSecurityKey"))),
                         RequireSignedTokens = true,
                         RequireExpirationTime = true,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
                     };
                 });
             
@@ -105,6 +111,9 @@ namespace MyIdeaPool
                 app.UseHsts();
             }
 
+
+            app.UseSecurityHeadersMiddleWare();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

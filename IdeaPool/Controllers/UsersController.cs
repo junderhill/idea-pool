@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyIdeaPool.Data;
 using MyIdeaPool.Models;
@@ -9,7 +10,6 @@ using MyIdeaPool.ViewModels;
 
 namespace MyIdeaPool.Controllers
 {
-    [Route("users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -26,6 +26,15 @@ namespace MyIdeaPool.Controllers
             _tokenManager = tokenManager;
         }
 
+        [Route("me")]
+        [HttpGet]
+        [Authorize]
+        public ActionResult UserInfo()
+        {
+            return Ok("test");
+        }
+        
+       [Route("users")]
        [HttpPost] 
        public async Task<ActionResult> Signup([FromBody]UserSignupViewModel model)
        {
