@@ -20,12 +20,21 @@ namespace MyIdeaPool.Data
             _userManager = userManager;
         }
 
-        public async Task<TokenResponse> GenerateTokenResponse(string username)
+        public async Task<TokenResponse> GenerateTokenResponse(string username, bool includeRefresh = true)
         {
+            var jwt = new JwtSecurityTokenHandler().WriteToken(CreateToken(username));
+          
+            if(includeRefresh){
+              var refresh_token = await CreateRefreshToken(username);
+              return new TokenWithRefreshResponse(){
+                jwt = jwt,
+                refresh_token = refresh_token
+              };
+            }
+
             return new TokenResponse()
             {
-                jwt = new JwtSecurityTokenHandler().WriteToken(CreateToken(username)),
-                refresh_token = await CreateRefreshToken(username)
+              jwt = jwt
             };
         }
 

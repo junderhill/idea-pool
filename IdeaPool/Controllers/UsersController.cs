@@ -9,7 +9,7 @@ using MyIdeaPool.ViewModels;
 
 namespace MyIdeaPool.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("users")]
     [ApiController]
     public class UsersController : ControllerBase
     {

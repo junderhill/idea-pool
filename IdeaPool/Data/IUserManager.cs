@@ -117,5 +117,6 @@ namespace MyIdeaPool.Data
         bool SupportsQueryableUsers { get; }
         IQueryable<User> Users { get; }
         Task UpdateRefreshTokenForUser(string username, string refreshtoken);
+        User FindByRefreshToken(string modelRefreshToken);
     }
 }

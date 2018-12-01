@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,6 +21,12 @@ namespace MyIdeaPool.Data
             var user = await FindByNameAsync(username);
             user.RefreshToken = refreshtoken;
             await Store.UpdateAsync(user, CancellationToken.None);
+        }
+
+        public User FindByRefreshToken(string modelRefreshToken)
+        {
+            var user = this.Users.FirstOrDefault(x => x.RefreshToken == modelRefreshToken);
+            return user;
         }
     }
 }
