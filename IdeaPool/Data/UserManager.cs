@@ -23,10 +23,20 @@ namespace MyIdeaPool.Data
             await Store.UpdateAsync(user, CancellationToken.None);
         }
 
-        public User FindByRefreshToken(string modelRefreshToken)
+        public User FindByRefreshToken(string refreshtoken)
         {
-            var user = this.Users.FirstOrDefault(x => x.RefreshToken == modelRefreshToken);
+            var user = this.Users.FirstOrDefault(x => x.RefreshToken == refreshtoken);
             return user;
+        }
+
+        public async Task RemoveRefreshToken(string refreshtoken)
+        {
+            var user = this.Users.FirstOrDefault(x => x.RefreshToken == refreshtoken);
+            if (user != null)
+            {
+                user.RefreshToken = string.Empty;
+                await this.Store.UpdateAsync(user, CancellationToken.None);
+            }
         }
     }
 }
