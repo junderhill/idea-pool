@@ -124,7 +124,7 @@ namespace IdeaPool.Tests.ControllerTests
         {
             //arrange
             SetValidatorToReturnIsValid();
-            A.CallTo(() => tokenManager.GenerateTokenResponse(A<string>.Ignored)).Returns(new TokenResponse(){jwt = "abc123",refresh_token = "abc123"});
+            A.CallTo(() => tokenManager.GenerateTokenResponse(A<string>.Ignored, true)).Returns(new TokenWithRefreshResponse(){jwt = "abc123",refresh_token = "abc123"});
             A.CallTo(() => mapper.Map<UserSignupViewModel, User>(model))
                 .Returns(new User()
                 {

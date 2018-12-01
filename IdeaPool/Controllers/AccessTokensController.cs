@@ -33,5 +33,23 @@ namespace MyIdeaPool.Controllers
           var token = await _tokenManager.GenerateTokenResponse(user.UserName, false);
           return Ok(token);
        }
+
+        [HttpPost]
+        public async Task<ActionResult> Signin([FromBody]SigninViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.email);
+            if(user == null)
+              return BadRequest();
+
+            var validPassword = await _userManager.CheckPasswordAsync(user, model.password);
+            if(!validPassword)
+              return BadRequest();
+
+            var tokenResponse = await _tokenManager.GenerateTokenResponse(model.email);
+
+            return Ok(tokenResponse);
+        }
+
+
     }
 }
