@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyIdeaPool.Data;
 using MyIdeaPool.Models;
 using MyIdeaPool.Validators;
+using MyIdeaPool.ViewModels;
 
 namespace MyIdeaPool.Controllers
 {
@@ -36,8 +37,9 @@ namespace MyIdeaPool.Controllers
 
             _context.Ideas.Add(idea);
             _context.SaveChanges();
-            
-            return Ok();
+
+            var response = _mapper.Map<Idea, IdeaResponse>(idea);
+            return Ok(response);
         }
 
         private void SetUserID(Idea idea)

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyIdeaPool.Controllers;
 using MyIdeaPool.Data;
 using MyIdeaPool.Models;
+using MyIdeaPool.ViewModels;
 using Xunit;
 
 namespace IdeaPool.Tests.ControllerTests
@@ -91,6 +92,19 @@ namespace IdeaPool.Tests.ControllerTests
             A.CallTo(() => context.Ideas.Add(A<Idea>.Ignored)).MustHaveHappenedOnceExactly();
             A.CallTo(() => context.SaveChanges());
         }
+
+        [Fact]
+        public void TestThatCreateIdeaReturnsCompletedIdea()
+        {
+            SetValidatorToReturnIsValid(); 
+            A.CallTo(() => mapper.Map<IdeaViewModel, Idea>(model)).Returns(new Idea(){});
+            A.CallTo(() => mapper.Map<Idea, IdeaResponse>(A<Idea>.Ignored)).Returns(new IdeaResponse());
+            //act
+            var result = sut.CreateIdea(model);
+            //assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var ideaResponse = Assert.IsType<IdeaResponse>(okResult.Value);
+        }
         
         private void SetValidatorToReturnIsValid()
         {
@@ -99,4 +113,5 @@ namespace IdeaPool.Tests.ControllerTests
             A.CallTo(() => validator.Validate(A<IdeaViewModel>.Ignored)).Returns(validationResult);
         }
     }
+
 }

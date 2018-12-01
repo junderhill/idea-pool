@@ -90,6 +90,8 @@ namespace MyIdeaPool
                         .ForMember(dest => dest.Impact, opt => opt.MapFrom(src => src.impact))
                         .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.content))
                         .ForMember(dest => dest.Ease, opt => opt.MapFrom(src => src.ease));
+                    cfg.CreateMap<Idea, IdeaResponse>()
+                        .ConvertUsing<IdeaResponseMapper>();
                 }).CreateMapper());
             
             services.AddScoped<IValidator<UserSignupViewModel>, UserSignupViewModelValidator>();
@@ -123,6 +125,23 @@ namespace MyIdeaPool
             app.UseSecurityHeadersMiddleWare();
             app.UseAuthentication();
             app.UseMvc();
+        }
+    }
+
+    internal class IdeaResponseMapper : ITypeConverter<Idea,IdeaResponse>
+    {
+        public IdeaResponse Convert(Idea source, IdeaResponse destination, ResolutionContext context)
+        {
+            return new IdeaResponse
+            {
+                id = source.Id,
+                confidence = source.Confidence,
+                content = source.Content,
+                created_at = source.CreatedTimestamp.ToUnixEpoch(),
+                average_score = source.Average,
+                ease = source.Ease,
+                impact = source.Impact
+            };
         }
     }
 }
