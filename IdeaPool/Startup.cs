@@ -85,9 +85,16 @@ namespace MyIdeaPool
                         .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.email))
                         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.email))
                         .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.name));
+                    cfg.CreateMap<IdeaViewModel, Idea>()
+                        .ForMember(dest => dest.Confidence, opt => opt.MapFrom(src => src.confidence))
+                        .ForMember(dest => dest.Impact, opt => opt.MapFrom(src => src.impact))
+                        .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.content))
+                        .ForMember(dest => dest.Ease, opt => opt.MapFrom(src => src.ease));
                 }).CreateMapper());
             
             services.AddScoped<IValidator<UserSignupViewModel>, UserSignupViewModelValidator>();
+            services.AddScoped<IValidator<IdeaViewModel>, IdeaViewModelValidator>();
+            services.AddScoped<IIdeaPoolContext, IdeaPoolContext>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<ITokenManager,JwtTokenManager>();
         }

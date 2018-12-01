@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using MyIdeaPool;
 using MyIdeaPool.Data;
+using MyIdeaPool.Models;
 using Xunit;
 
 namespace IdeaPool.Tests
@@ -19,6 +20,13 @@ namespace IdeaPool.Tests
         public JwtTokenManagerTests()
         {
             userManager = A.Fake<IUserManager>();
+            A.CallTo(() => userManager.FindByNameAsync(A<string>.Ignored)).Returns(new User
+            {
+                Id = "abc",
+                Fullname = "abc",
+                Email = "email",
+                UserName = "username"
+            });
             authSettingsOption = A.Fake<IOptions<AuthenticationSettings>>();
             authenticationSettings = A.Fake<AuthenticationSettings>();
             A.CallTo(() => authenticationSettings.SymmetricSecurityKey).Returns("XPmOYd8JmUhN3XEXom8Vig56AnOQnkjVn7exzM9oxRkZSlX7Kf1IWabMGSNQqb1");
@@ -38,12 +46,12 @@ namespace IdeaPool.Tests
         }
         
         [Fact]
-        public void TestThatCreateTokenUsesTheExpiryTimeFromTheConfig()
+        public async Task TestThatCreateTokenUsesTheExpiryTimeFromTheConfig()
         {
             //arrange
             var sut = new JwtTokenManager(authSettingsOption, userManager);
             //act
-            var token = sut.CreateToken("username");
+            var token = await sut.CreateToken("username");
             //assert
             A.CallTo(() => authenticationSettings.TokenExpiryMinutes).MustHaveHappened();
             //We calculate approx when we would expect the token to expire,

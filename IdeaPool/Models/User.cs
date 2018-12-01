@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,5 +12,7 @@ namespace MyIdeaPool.Models
 
         [MaxLength(40)]
         public string RefreshToken { get; set; }
+        
+        public virtual List<Idea> Ideas { get; set; }
     }
 }

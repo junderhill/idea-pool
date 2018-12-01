@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyIdeaPool.Data;
 
 namespace myideapool.Migrations
 {
     [DbContext(typeof(IdeaPoolContext))]
-    partial class IdeaPoolContextModelSnapshot : ModelSnapshot
+    [Migration("20181201214323_AddIdea")]
+    partial class AddIdea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,7 +143,6 @@ namespace myideapool.Migrations
                     b.Property<int>("Confidence");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<int>("Ease");
