@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -35,8 +37,18 @@ namespace MyIdeaPool.Controllers
             return Ok(new
             {
                 email = ControllerContext.HttpContext.User.Claims.Single(c => c.Type == ClaimTypes.Email).Value,
-                name = ControllerContext.HttpContext.User.Claims.Single(c => c.Type == "Fullname").Value
+                name = ControllerContext.HttpContext.User.Claims.Single(c => c.Type == "Fullname").Value,
+                avatar_url = GenerateGravatarUrl(ControllerContext.HttpContext.User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email).Value)
             });
+        }
+
+        private string GenerateGravatarUrl(string email)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(email));
+                return $"https://www.gravatar.com/avatar/{Encoding.ASCII.GetString(result)}?d=mm&s=200";
+            }
         }
         
        [Route("users")]
