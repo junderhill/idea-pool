@@ -116,11 +116,6 @@ namespace MyIdeaPool
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
-
 
             app.UseSecurityHeadersMiddleWare();
             app.UseAuthentication();
